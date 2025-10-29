@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.epam'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '21'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2023.0.5")
+    commonsLang3Version = '3.12.0'
+    commonsCollectionsVersion = '4.1'
+    commonsTextVersion = '1.12.0'
+    guavaVersion = '33.2.0-jre'
+    githubApiVersion = '1.327'
+    JavaWebSocketVersion = '1.5.3'
+    assertjCoreVersion = '3.27.3'
+    restAssuredVersion = '5.4.0'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // SpringDoc OpenAPI dependencies for automatic documenting of REST APIs
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'    // compatible with Spring Boot 3.2.x
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    implementation("org.apache.commons:commons-collections4:${commonsCollectionsVersion}")
+    implementation "org.apache.commons:commons-text:${commonsTextVersion}"
+    implementation "com.google.guava:guava:${guavaVersion}"
+
+    // default RestTemplate (and its default SimpleClientHttpRequestFactory)
+    // does not support the HTTP PATCH method when using the JDK's HttpURLConnection
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
+    
+    // MCP dependencies
+    implementation 'com.fasterxml.jackson.core:jackson-databind'    // TODO: check - is this really needed?
+    implementation "org.java-websocket:Java-WebSocket:${JavaWebSocketVersion}"
+    implementation 'org.slf4j:slf4j-api'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.assertj:assertj-core:${assertjCoreVersion}"
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+test {
+    useJUnitPlatform()
+//    finalizedBy jacocoTestReport
+}
