@@ -3,7 +3,7 @@ package com.ai.poc.agent.service;
 import com.ai.poc.agent.jira.dto.JiraSearchResponse;
 import com.ai.poc.agent.jira.dto.JiraSearchResponseIssue;
 import com.ai.poc.agent.jira.service.JiraSearchService;
-import com.ai.poc.agent.dial.client.LlmClient;
+import com.ai.poc.agent.llm.client.SapLlmClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +17,7 @@ import java.util.List;
 public class JiraToRequirementsTransformerService {
 
     private final JiraSearchService jiraSearchService;
-    private final LlmClient llmClient;
+    private final SapLlmClient sapLlmClient;
     // note the inscription is expected to be ib bold in Jira, otherwise search won't find the phrase
     private static final String RELATED_TICKETS_PREFIX = "{*}Related Tickets{*}: ";
 
@@ -31,6 +31,7 @@ public class JiraToRequirementsTransformerService {
 
         var multiTicketSearchProjectName = "EPM-CDME";
         List<JiraSearchResponseIssue> foundJiraIssues = findRelatedTickets(multiTicketSearchProjectName, multiTicketSearchKeywords);
+
         transformJiraTicketsToRequirements(foundJiraIssues);
     }
 

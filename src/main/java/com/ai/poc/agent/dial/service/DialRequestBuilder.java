@@ -1,4 +1,4 @@
-package com.ai.poc.agent.jira.service;
+package com.ai.poc.agent.dial.service;
 
 import com.ai.poc.agent.dial.dto.DialRequestDto;
 import com.ai.poc.agent.jira.dto.JiraSearchResponseIssue;

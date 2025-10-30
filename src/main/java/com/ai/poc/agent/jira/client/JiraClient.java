@@ -1,10 +1,8 @@
 package com.ai.poc.agent.jira.client;
 
-import com.ai.poc.agent.jira.config.FeignConfig;
 import com.ai.poc.agent.jira.config.JiraClientConfig;
 import com.ai.poc.agent.jira.dto.JiraSearchRequestDto;
 import com.ai.poc.agent.jira.dto.JiraSearchResponse;
-import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

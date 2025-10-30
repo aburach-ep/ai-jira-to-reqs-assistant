@@ -6,8 +6,9 @@ plugins {
 
 group = 'com.epam'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '21'
-
+java {
+    sourceCompatibility = '21'
+}
 repositories {
     mavenCentral()
 }

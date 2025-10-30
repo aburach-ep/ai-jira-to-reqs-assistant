@@ -1,6 +1,7 @@
 package com.ai.poc.agent.jira.service;
 
-import com.ai.poc.agent.dial.client.LlmClient;
+import com.ai.poc.agent.dial.client.DialClient;
+import com.ai.poc.agent.dial.service.DialRequestBuilder;
 import com.ai.poc.agent.jira.client.JiraUpdateService;
 import com.ai.poc.agent.dial.dto.DialResponseDto;
 import com.ai.poc.agent.jira.dto.JiraSearchResponse;
@@ -24,7 +25,7 @@ public class JiraTicketAnalysisService {
 
     private final JiraSearchService jiraSearchService;
     private final DialRequestBuilder dialRequestBuilder;
-    private final LlmClient dialClient;
+    private final DialClient dialClient;
     private final JiraUpdateService jiraUpdateService;
 
     @Value("${dial.api-key}")
