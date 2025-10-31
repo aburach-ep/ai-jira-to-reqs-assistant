@@ -2,7 +2,7 @@ package com.ai.poc.agent.dial.service;
 
 import com.ai.poc.agent.dial.dto.DialRequestDto;
 import com.ai.poc.agent.jira.dto.JiraSearchResponseIssue;
-import com.ai.poc.agent.jira.utils.FileUtils;
+import com.ai.poc.agent.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.stereotype.Service;

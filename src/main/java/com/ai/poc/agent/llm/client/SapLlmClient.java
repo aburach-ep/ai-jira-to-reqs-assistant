@@ -1,10 +1,7 @@
 package com.ai.poc.agent.llm.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import com.ai.poc.agent.llm.dto.LlmChatCompletionRequestDto;
 import com.ai.poc.agent.llm.dto.LlmChatCompletionResponseDto;
 
@@ -15,6 +12,7 @@ public interface SapLlmClient {
     LlmChatCompletionResponseDto callChatCompletionApi(
             @PathVariable("deploymentId") String deploymentId,
             @RequestParam("api-version") String apiVersion,
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody LlmChatCompletionRequestDto request
     );
 }

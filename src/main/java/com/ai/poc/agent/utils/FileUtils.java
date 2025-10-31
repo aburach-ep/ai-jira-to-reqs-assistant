@@ -11,7 +11,7 @@
  * the terms of the license.
  */
 
-package com.ai.poc.agent.jira.utils;
+package com.ai.poc.agent.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

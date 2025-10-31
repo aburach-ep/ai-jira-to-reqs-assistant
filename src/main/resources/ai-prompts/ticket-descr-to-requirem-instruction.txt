@@ -1,1 +1,0 @@
-Review the provided Jira ticket descriptions for software development projects and convert them into a set of well-defined, well structured requirements. Identify  overlapping or duplicate requirements and consolidate them. Here is the list of Jira ticket descriptions:

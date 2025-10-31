@@ -4,6 +4,7 @@ import com.ai.poc.agent.jira.dto.JiraSearchResponse;
 import com.ai.poc.agent.jira.dto.JiraSearchResponseIssue;
 import com.ai.poc.agent.jira.service.JiraSearchService;
 import com.ai.poc.agent.llm.client.SapLlmClient;
+import com.ai.poc.agent.llm.service.SapLlmApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,8 +18,9 @@ import java.util.List;
 public class JiraToRequirementsTransformerService {
 
     private final JiraSearchService jiraSearchService;
-    private final SapLlmClient sapLlmClient;
-    // note the inscription is expected to be ib bold in Jira, otherwise search won't find the phrase
+    private final SapLlmApiService llmApiService;
+
+    // note the inscription is expected to be in bold in Jira, otherwise search won't find the phrase
     private static final String RELATED_TICKETS_PREFIX = "{*}Related Tickets{*}: ";
 
     public void findAndTransformJiraTicketsToRequirements() {
@@ -60,9 +62,10 @@ public class JiraToRequirementsTransformerService {
         return jiraSearchResponse.getIssues();
     }
 
-    private static String transformJiraTicketsToRequirements(List<JiraSearchResponseIssue> jiraIssues) {
-        //TODO: Implement transformation logic via calling LLM
-        return "Transformation to requirements completed.";
+    private String transformJiraTicketsToRequirements(List<JiraSearchResponseIssue> jiraIssues) {
+        var generatedRequirementsResponse = llmApiService.callChatCompletionApi(jiraIssues);
+        log.info("\n<----- Generated requirements: ------\n\n" + generatedRequirementsResponse);
+        return generatedRequirementsResponse;
     }
 
     private static boolean isSearchResultEmpty(List<JiraSearchResponseIssue> singleTicketSearchResults) {
