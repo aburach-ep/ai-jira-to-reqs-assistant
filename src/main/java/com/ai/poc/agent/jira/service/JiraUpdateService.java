@@ -1,4 +1,4 @@
-package com.ai.poc.agent.jira.client;
+package com.ai.poc.agent.jira.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

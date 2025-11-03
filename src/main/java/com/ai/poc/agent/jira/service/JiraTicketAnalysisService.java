@@ -2,7 +2,6 @@ package com.ai.poc.agent.jira.service;
 
 import com.ai.poc.agent.dial.client.DialClient;
 import com.ai.poc.agent.dial.service.DialRequestBuilder;
-import com.ai.poc.agent.jira.client.JiraUpdateService;
 import com.ai.poc.agent.dial.dto.DialResponseDto;
 import com.ai.poc.agent.jira.dto.JiraSearchResponse;
 import com.ai.poc.agent.jira.dto.JiraSearchResponseIssue;
