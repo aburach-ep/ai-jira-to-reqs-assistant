@@ -3,7 +3,6 @@ package com.ai.poc.agent.service;
 import com.ai.poc.agent.jira.dto.JiraSearchResponse;
 import com.ai.poc.agent.jira.dto.JiraSearchResponseIssue;
 import com.ai.poc.agent.jira.service.JiraSearchService;
-import com.ai.poc.agent.llm.client.SapLlmClient;
 import com.ai.poc.agent.llm.service.SapLlmApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,25 +22,24 @@ public class JiraToRequirementsTransformerService {
     // note the inscription is expected to be in bold in Jira, otherwise search won't find the phrase
     private static final String RELATED_TICKETS_PREFIX = "{*}Related Tickets{*}: ";
 
-    public void findAndTransformJiraTicketsToRequirements() {
-        var singleTicketSearchProjectName = "EPMCDMETST";
-        var singleTicketSearchResults = retrieveProvidedTicketDescription(singleTicketSearchProjectName, "experimentation with MCP");
+    public String findAndTransformJiraTicketsToRequirements(String jiraTicketKey) {
+        var singleTicketSearchResults = retrieveProvidedTicketByKey(jiraTicketKey);
         if (isSearchResultEmpty(singleTicketSearchResults)) {
-            return;
+            return StringUtils.EMPTY;
         }
         List<String> multiTicketSearchKeywords = parseRelatedTicketKeywords(singleTicketSearchResults.get(0).fields.description);
 
         var multiTicketSearchProjectName = "EPM-CDME";
         List<JiraSearchResponseIssue> foundJiraIssues = findRelatedTickets(multiTicketSearchProjectName, multiTicketSearchKeywords);
 
-        transformJiraTicketsToRequirements(foundJiraIssues);
+        return transformJiraTicketsToRequirements(foundJiraIssues);
     }
 
     /**
-     * Retrieves provided ticket description, searches the ticket by projectName and jiraSearchText
+     * Retrieves provided ticket description, searches the ticket by projectName and jiraTicketKey
      */
-    private List<JiraSearchResponseIssue> retrieveProvidedTicketDescription(String projectName, String jiraSearchText) {
-        JiraSearchResponse singleTicketSearchResponse = jiraSearchService.findSingleTicketBySummary(projectName, jiraSearchText);
+    private List<JiraSearchResponseIssue> retrieveProvidedTicketByKey(String jiraTicketKey) {
+        JiraSearchResponse singleTicketSearchResponse = jiraSearchService.findSingleTicketByKey(jiraTicketKey);
         return singleTicketSearchResponse.getIssues();
     }
 

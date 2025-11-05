@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JiraSearchService {
 
-    public static final String JIRA_SEARCH_REQ_BY_SUMMARY = "project = \"%s\" AND text ~ \"%s\"";
+    public static final String JIRA_SEARCH_REQ_BY_KEY = "key = \"%s\"";
     public static final String JIRA_SEARCH_REQ_PART_MULTIPLE_TICKETS = "project = \"%s\" AND type = \"Task\"";
     private static final int SINGLE_TICKET_SEARCH_RESULT_SIZE = 1;
     private static final int MULTI_TICKETS_SEARCH_RESULT_SIZE = 3;
 
     private final JiraClient jiraClient;
 
-    public JiraSearchResponse findSingleTicketBySummary(String projectName, String searchText) {
-        var jiraSearchRequest = createJiraSearchRequestBySummary(projectName, searchText);
+    public JiraSearchResponse findSingleTicketByKey(String jiraTicketKey) {
+        var jiraSearchRequest = createJiraSearchRequestByKey(jiraTicketKey);
         JiraSearchResponse searchResponse = jiraClient.findItems(jiraSearchRequest);
         return searchResponse;
     }
@@ -34,8 +34,8 @@ public class JiraSearchService {
         return searchResponse;
     }
 
-    private static JiraSearchRequestDto createJiraSearchRequestBySummary(String projectName, String jiraSearchSummary) {
-        var jql = String.format(JIRA_SEARCH_REQ_BY_SUMMARY, projectName, jiraSearchSummary);
+    private static JiraSearchRequestDto createJiraSearchRequestByKey(String jiraTicketKey) {
+        var jql = String.format(JIRA_SEARCH_REQ_BY_KEY, jiraTicketKey);
         var jiraSearchRequest = JiraSearchRequestDto.builder()
                 .jql(jql)
                 .maxResults(SINGLE_TICKET_SEARCH_RESULT_SIZE)

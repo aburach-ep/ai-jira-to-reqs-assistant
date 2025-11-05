@@ -33,8 +33,8 @@ public class JiraTicketAnalysisService {
     @Value("${dial.foundation-model}")
     private String dialModel;
 
-    public List<JiraTicketAnalysisResultDto> analyzeTickets(String projectName, String searchText) {
-        JiraSearchResponse searchResponse = jiraSearchService.findSingleTicketBySummary(projectName, searchText);
+    public List<JiraTicketAnalysisResultDto> analyzeTickets(String jiraTicketKey) {
+        JiraSearchResponse searchResponse = jiraSearchService.findSingleTicketByKey(jiraTicketKey);
 
         List<JiraTicketAnalysisResultDto> ticketResults = new ArrayList<>();
         for (JiraSearchResponseIssue issue : searchResponse.getIssues()) {
