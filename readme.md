@@ -10,7 +10,7 @@ This project provides AI-powered assistant (agent), capable to generate holistic
 - target Foundation Model is configurable, currently these FMs are supported:
   - gpt-4o
   - gemini-2.5-pro
-
+- the `gemini-2.5-pro` Foundation Model seems produces results of **better quality**
 ## Getting Started
 1. Update your Jira and AI (LLM) API keys in `application.yaml`.
 2. Run `./gradlew bootRun` to start the service.
