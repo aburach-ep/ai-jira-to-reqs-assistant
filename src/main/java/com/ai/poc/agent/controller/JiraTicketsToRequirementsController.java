@@ -22,9 +22,7 @@ public class JiraTicketsToRequirementsController {
 			consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE
 	)
-    public String parseJiTicketsFromFileAndTransformToRequirements(
-			@RequestPart("file") MultipartFile jiraTicketsCsvFile
-    ) {
+    public String parseJiTicketsFromFileAndTransformToRequirements(@RequestPart("file") MultipartFile jiraTicketsCsvFile) {
 		String jiraTicketsCsvFileContent = readFileToString(jiraTicketsCsvFile);
 		return jiraExcelFileToRequiremTransformerService.parseJiraTicketsFromExcelAndTransformToRequirements(jiraTicketsCsvFileContent);
     }
