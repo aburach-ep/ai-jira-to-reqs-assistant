@@ -1,13 +1,11 @@
 package com.ai.poc.agent.jira.service;
 
 import com.ai.poc.agent.jira.dto.JiraTicketDto;
-import com.ai.poc.agent.utils.FileUtils;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -105,14 +103,14 @@ public class JiraExcelParseService {
      * @param columnIndexes Map of CSV column names to indexes
      * @return JiraTicketDto object or null if mapping fails
      */
-    private static  JiraTicketDto mapRecordToDto(CSVRecord record, Map<String, java.lang.Integer> columnIndexes) {
+    private static JiraTicketDto mapRecordToDto(CSVRecord record, Map<String, java.lang.Integer> columnIndexes) {
         try {
-            String summary = getValueSafe(record, columnIndexes.get(CSV_COLUMN_SUMMARY));
-            String issueKey = getValueSafe(record, columnIndexes.get(CSV_COLUMN_ISSUE_KEY));
-            String issueType = getValueSafe(record, columnIndexes.get(CSV_COLUMN_ISSUE_TYPE));
-            String status = getValueSafe(record, columnIndexes.get(CSV_COLUMN_STATUS));
-            String projectKey = getValueSafe(record, columnIndexes.get(CSV_COLUMN_PROJECT_KEY));
-            String description = getValueSafe(record, columnIndexes.get(CSV_COLUMN_DESCRIPTION));
+            String summary = getValueSafely(record, columnIndexes.get(CSV_COLUMN_SUMMARY));
+            String issueKey = getValueSafely(record, columnIndexes.get(CSV_COLUMN_ISSUE_KEY));
+            String issueType = getValueSafely(record, columnIndexes.get(CSV_COLUMN_ISSUE_TYPE));
+            String status = getValueSafely(record, columnIndexes.get(CSV_COLUMN_STATUS));
+            String projectKey = getValueSafely(record, columnIndexes.get(CSV_COLUMN_PROJECT_KEY));
+            String description = getValueSafely(record, columnIndexes.get(CSV_COLUMN_DESCRIPTION));
 
             return JiraTicketDto.builder()
                     .issueKey(issueKey)
@@ -131,7 +129,7 @@ public class JiraExcelParseService {
     /**
      * Gets the value at the specified index, returning empty string if index is out of bounds.
      */
-    private static String getValueSafe(CSVRecord record, Integer index) {
+    private static String getValueSafely(CSVRecord record, Integer index) {
         if (index == null)
             return StringUtils.EMPTY;
         if (index >= 0 && index < record.size()) {
