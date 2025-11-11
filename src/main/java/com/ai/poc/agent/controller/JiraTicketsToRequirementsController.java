@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @RestController
@@ -30,7 +31,7 @@ public class JiraTicketsToRequirementsController {
 	private static String readFileToString(MultipartFile file) {
 		try {
 			return new String(file.getBytes(), StandardCharsets.UTF_8);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException("Failed to read attached to request CSV file", e);
 		}
 	}

@@ -97,9 +97,8 @@ public class JiraExcelParseService {
     }
 
     /**
-     * Maps a CSV record to a JiraTicketDto object.
-     *
-     * @param record       The CSV record to map
+     * Maps a CSV record to JiraTicketDto item
+     * @param record        CSV record to map into JiraTicketDto
      * @param columnIndexes Map of CSV column names to indexes
      * @return JiraTicketDto object or null if mapping fails
      */
