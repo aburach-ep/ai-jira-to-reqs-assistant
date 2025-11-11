@@ -1,7 +1,7 @@
 package com.ai.poc.agent.dial.service;
 
 import com.ai.poc.agent.dial.dto.DialRequestDto;
-import com.ai.poc.agent.jira.dto.JiraSearchResponseIssue;
+import com.ai.poc.agent.jira.dto.JiraSearchResponseTicket;
 import com.ai.poc.agent.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.StringSubstitutor;
@@ -20,7 +20,7 @@ public class DialRequestBuilder {
     private static final String JIRA_TICKET_TITLE = "jiraTicketTitle";
     private static final String JIRA_TICKET_DESCRIPTION = "jiraTicketDescription";
 
-    public DialRequestDto mapJiraResponseIssueToDialRequest(JiraSearchResponseIssue jiraIssue) {
+    public DialRequestDto mapJiraResponseIssueToDialRequest(JiraSearchResponseTicket jiraIssue) {
         var templateRequest = FileUtils.readSystemResource(AI_REQUEST_TEMPLATE);
         Map<String, String> templateVariables = Map.ofEntries(
                 Map.entry(JIRA_TICKET_TITLE, jiraIssue.fields.summary),

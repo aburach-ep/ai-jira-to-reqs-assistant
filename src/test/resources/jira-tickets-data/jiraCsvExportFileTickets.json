@@ -1,0 +1,27 @@
+[
+  {
+    "issueKey": "PROJ-101",
+    "summary": "Allow users to reset password via email",
+    "issueType": "Story",
+    "status": "To Do",
+    "projectKey": "PROJ",
+    "description": "Implement password reset flow with email OTP and token expiry."
+  },
+  {
+    "issueKey": "PROJ-102",
+    "summary": "Fix 500 error on checkout when coupon applied",
+    "issueType": "Bug",
+    "status": "In Progress",
+    "projectKey": "PROJ",
+    "description": "Investigate NullPointerException in discount calculation service."
+  },
+  {
+    "issueKey": "PROJ-103",
+    "summary": "Add audit logging for admin actions",
+    "issueType": "Task",
+    "status": "Done",
+    "projectKey": "PROJ",
+    "description": "Log create/update/delete actions with actor, timestamp and payload hash."
+  }
+]
+

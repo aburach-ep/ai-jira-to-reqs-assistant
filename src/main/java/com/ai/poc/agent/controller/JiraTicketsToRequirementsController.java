@@ -1,24 +1,39 @@
 package com.ai.poc.agent.controller;
 
-import com.ai.poc.agent.service.JiraToRequirementsTransformerService;
+import com.ai.poc.agent.service.JiraExcelFileToRequiremTransformerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequiredArgsConstructor
 public class JiraTicketsToRequirementsController {
 
-    private final JiraToRequirementsTransformerService jiraToRequirementsTransformerService;
+    private final JiraExcelFileToRequiremTransformerService jiraExcelFileToRequiremTransformerService;
 
-    // TODO: update endpoint to POST with just projectName and searchText as request body
-    @PostMapping(value = "/jira-tickets-to-requirements", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String findRelatedTicketsAndTransformToRequirements(
-            @RequestParam("parentFeatureTicketKey") String parentFeatureTicketKey
+    // the endpoint expects Exported CSV file with Jira tickets as attachment
+	@PostMapping(
+			value = "/jira-tickets-to-requirements",
+			consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+    public String parseJiTicketsFromFileAndTransformToRequirements(
+			@RequestPart("file") MultipartFile jiraTicketsCsvFile
     ) {
-        // parentFeatureTicketKey will look like EPMCDMETST-14052
-        return jiraToRequirementsTransformerService.findAndTransformJiraTicketsToRequirements(parentFeatureTicketKey);
+		String jiraTicketsCsvFileContent = readFileToString(jiraTicketsCsvFile);
+		return jiraExcelFileToRequiremTransformerService.parseJiraTicketsFromExcelAndTransformToRequirements(jiraTicketsCsvFileContent);
     }
+
+	private static String readFileToString(MultipartFile file) {
+		try {
+			return new String(file.getBytes(), StandardCharsets.UTF_8);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to read uploaded CSV file", e);
+		}
+	}
 } 

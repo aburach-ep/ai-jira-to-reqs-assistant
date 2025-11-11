@@ -4,7 +4,7 @@ import com.ai.poc.agent.dial.client.DialClient;
 import com.ai.poc.agent.dial.service.DialRequestBuilder;
 import com.ai.poc.agent.dial.dto.DialResponseDto;
 import com.ai.poc.agent.jira.dto.JiraSearchResponse;
-import com.ai.poc.agent.jira.dto.JiraSearchResponseIssue;
+import com.ai.poc.agent.jira.dto.JiraSearchResponseTicket;
 import com.ai.poc.agent.jira.dto.JiraTicketAnalysisResultDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +37,7 @@ public class JiraTicketAnalysisService {
         JiraSearchResponse searchResponse = jiraSearchService.findSingleTicketByKey(jiraTicketKey);
 
         List<JiraTicketAnalysisResultDto> ticketResults = new ArrayList<>();
-        for (JiraSearchResponseIssue issue : searchResponse.getIssues()) {
+        for (JiraSearchResponseTicket issue : searchResponse.getIssues()) {
             var analyzeTicketRequest = dialRequestBuilder.mapJiraResponseIssueToDialRequest(issue);
             DialResponseDto dialResponseDto = dialClient.callChatApi(dialApiKey, DIAL_API_VERSION, analyzeTicketRequest);
 
@@ -58,7 +58,7 @@ public class JiraTicketAnalysisService {
         return ticketResults;
     }
 
-    private static void printIssueDetailsAndDialResponse(JiraSearchResponseIssue issue, String dialResponseContent) {
+    private static void printIssueDetailsAndDialResponse(JiraSearchResponseTicket issue, String dialResponseContent) {
         System.out.println("<--- Original issue Summary: " + issue.fields.summary + " --->\n");
         System.out.println("<--- Original issue Description: " + issue.fields.description + " --->\n");
         System.out.println("<--- DIAL response Message: " + LF + dialResponseContent + LF + " --->\n");

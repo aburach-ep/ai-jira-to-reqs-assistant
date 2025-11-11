@@ -1,6 +1,7 @@
 package com.ai.poc.agent.llm.service;
 
-import com.ai.poc.agent.jira.dto.JiraSearchResponseIssue;
+import com.ai.poc.agent.jira.dto.JiraSearchResponseTicket;
+import com.ai.poc.agent.jira.dto.JiraTicketDto;
 import com.ai.poc.agent.llm.client.SapLlmAuthClient;
 import com.ai.poc.agent.llm.client.SapLlmClient;
 import com.ai.poc.agent.llm.dto.*;
@@ -45,45 +46,99 @@ public class SapLlmApiService {
     private String gemini25ProApiVersion;
 
 
-    public String callChatCompletionApi(List<JiraSearchResponseIssue> jiraTickets) {
+    /**
+     * Method accepts Jira tickets, parsed from CSV file
+     * @param jiraTickets
+     * @return llmResponseMessage
+     */
+    public String callChatCompletionApiForExportFileTickets(List<JiraTicketDto> jiraTickets) {
         // 1. Get access token
+        String accessToken = fetchAccessTokenViaApiCall();
+        var llmResponseMessage = "";
+
+        // 2. Call LLM api endpoint
+        switch (foundationModelToUse) {
+            case FOUNDATION_MODEL_GEMINI_25_PRO: {
+                llmResponseMessage = callLlmApiUsingGemini25ProAndExportFileTickets(accessToken, jiraTickets);
+                break;
+            }
+            case FOUNDATION_MODEL_GPT4O:
+            default: {
+                llmResponseMessage = callLlmApiUsingGpt4oAndExportFileTickets(accessToken, jiraTickets);
+            }
+        }
+        return llmResponseMessage;
+    }
+
+
+    /**
+     * Method accepts Jira Search Response tickets
+     * @param jiraTickets
+     * @return llmResponseMessage
+     */
+    public String callChatCompletionApiForSearchResultTickets(List<JiraSearchResponseTicket> jiraTickets) {
+        // 1. Get access token
+        String accessToken = fetchAccessTokenViaApiCall();
+        var llmResponseMessage = "";
+
+        // 2. Call LLM api endpoint
+        switch (foundationModelToUse) {
+            case FOUNDATION_MODEL_GEMINI_25_PRO: {
+                llmResponseMessage = callLlmApiUsingGemini25ProAndSearchResTickets(accessToken, jiraTickets);
+                break;
+            }
+            case FOUNDATION_MODEL_GPT4O:
+            default: {
+                llmResponseMessage = callLlmApiUsingGpt4oAndSearchResTickets(accessToken, jiraTickets);
+            }
+        }
+        return llmResponseMessage;
+    }
+
+    private String fetchAccessTokenViaApiCall() {
         SapLlmAuthTokenResponseDto tokenResponse = sapLlmAuthClient.getAccessToken(
                 SAP_LLM_AUTH_GRANT_TYPE,
                 clientId,
                 clientSecret
         );
         String accessToken = "Bearer " + tokenResponse.getAccessToken();
-        var llmResponseMessage = "";
-
-        // 2. Call LLM api endpoint
-        switch (foundationModelToUse) {
-            case FOUNDATION_MODEL_GEMINI_25_PRO: {
-                llmResponseMessage = callLlmApiUsingGemini25Pro(accessToken, jiraTickets);
-                break;
-            }
-            case FOUNDATION_MODEL_GPT4O:
-            default: {
-                llmResponseMessage = callLlmApiUsingGpt4o(accessToken, jiraTickets);
-            }
-        }
-        return llmResponseMessage;
+        return accessToken;
     }
 
-    public String callLlmApiUsingGpt4o(String accessToken, List<JiraSearchResponseIssue> jiraTickets) {
-        LlmChatCompletionRequestDto llmRequest = SapLlmRequestBuilder.createLlmRequestUsingGpt4oModel(jiraTickets);
+    private String callLlmApiUsingGpt4oAndExportFileTickets(String accessToken, List<JiraTicketDto> jiraTickets) {
+        var requirementsGenerationInstruction = JiraTicketsToLlmInstructionConverter.mapJiraExportFileIssuesToFormattedLlmInstruction(jiraTickets);
+        LlmChatCompletionRequestDto llmRequest = SapLlmRequestBuilder.createLlmRequestUsingGpt4oModel(requirementsGenerationInstruction);
         LlmChatCompletionResponseDto llmResponse = sapLlmClient.callGpt4oChatCompletionApi(
                 gpt4oDeploymentId, gpt4oApiVersion, accessToken, llmRequest
         );
-        var llmResponseMessage = llmResponse.getChoices().get(0).getMessage().getContent();
-        return llmResponseMessage;
+        return llmResponse.getChoices().get(0).getMessage().getContent();
     }
 
-    public String callLlmApiUsingGemini25Pro(String accessToken, List<JiraSearchResponseIssue> jiraTickets) {
-        GeminiGenerateContentRequestDto llmRequest = SapLlmRequestBuilder.createLlmRequestUsingGemini25ProModel(jiraTickets);
+    private String callLlmApiUsingGemini25ProAndExportFileTickets(String accessToken, List<JiraTicketDto> jiraTickets) {
+        var requirementsGenerationInstruction = JiraTicketsToLlmInstructionConverter.mapJiraExportFileIssuesToFormattedLlmInstruction(jiraTickets);
+        GeminiGenerateContentRequestDto llmRequest = SapLlmRequestBuilder.createLlmRequestUsingGemini25ProModel(requirementsGenerationInstruction);
         GeminiGenerateContentResponseDto llmResponse = sapLlmClient.callGemini25ProGenerateContentApi(
                 gemini25ProDeploymentId, gemini25ProApiVersion, accessToken, llmRequest
         );
-        var llmResponseMessage = llmResponse.getCandidates().get(0).getContent().getParts().get(0).getText();
-        return llmResponseMessage;
+        return  llmResponse.getCandidates().get(0).getContent().getParts().get(0).getText();
     }
+
+    private String callLlmApiUsingGpt4oAndSearchResTickets(String accessToken, List<JiraSearchResponseTicket> jiraTickets) {
+        var requirementsGenerationInstruction = JiraTicketsToLlmInstructionConverter.mapJiraSearchIssuesToFormattedLlmInstruction(jiraTickets);
+        LlmChatCompletionRequestDto llmRequest = SapLlmRequestBuilder.createLlmRequestUsingGpt4oModel(requirementsGenerationInstruction);
+        LlmChatCompletionResponseDto llmResponse = sapLlmClient.callGpt4oChatCompletionApi(
+                gpt4oDeploymentId, gpt4oApiVersion, accessToken, llmRequest
+        );
+        return llmResponse.getChoices().get(0).getMessage().getContent();
+    }
+
+    private String callLlmApiUsingGemini25ProAndSearchResTickets(String accessToken, List<JiraSearchResponseTicket> jiraTickets) {
+        var requirementsGenerationInstruction = JiraTicketsToLlmInstructionConverter.mapJiraSearchIssuesToFormattedLlmInstruction(jiraTickets);
+        GeminiGenerateContentRequestDto llmRequest = SapLlmRequestBuilder.createLlmRequestUsingGemini25ProModel(requirementsGenerationInstruction);
+        GeminiGenerateContentResponseDto llmResponse = sapLlmClient.callGemini25ProGenerateContentApi(
+                gemini25ProDeploymentId, gemini25ProApiVersion, accessToken, llmRequest
+        );
+        return  llmResponse.getCandidates().get(0).getContent().getParts().get(0).getText();
+    }
+
 }

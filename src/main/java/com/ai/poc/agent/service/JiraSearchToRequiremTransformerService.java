@@ -1,7 +1,7 @@
 package com.ai.poc.agent.service;
 
 import com.ai.poc.agent.jira.dto.JiraSearchResponse;
-import com.ai.poc.agent.jira.dto.JiraSearchResponseIssue;
+import com.ai.poc.agent.jira.dto.JiraSearchResponseTicket;
 import com.ai.poc.agent.jira.service.JiraSearchService;
 import com.ai.poc.agent.llm.service.SapLlmApiService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JiraToRequirementsTransformerService {
+public class JiraSearchToRequiremTransformerService {
 
     private final JiraSearchService jiraSearchService;
     private final SapLlmApiService llmApiService;
@@ -30,7 +30,7 @@ public class JiraToRequirementsTransformerService {
         List<String> multiTicketSearchKeywords = parseRelatedTicketKeywords(singleTicketSearchResults.get(0).fields.description);
 
         var multiTicketSearchProjectName = "EPM-CDME";
-        List<JiraSearchResponseIssue> foundJiraIssues = findRelatedTickets(multiTicketSearchProjectName, multiTicketSearchKeywords);
+        List<JiraSearchResponseTicket> foundJiraIssues = findRelatedTickets(multiTicketSearchProjectName, multiTicketSearchKeywords);
 
         return transformJiraTicketsToRequirements(foundJiraIssues);
     }
@@ -38,7 +38,7 @@ public class JiraToRequirementsTransformerService {
     /**
      * Retrieves provided ticket description, searches the ticket by projectName and jiraTicketKey
      */
-    private List<JiraSearchResponseIssue> retrieveProvidedTicketByKey(String jiraTicketKey) {
+    private List<JiraSearchResponseTicket> retrieveProvidedTicketByKey(String jiraTicketKey) {
         JiraSearchResponse singleTicketSearchResponse = jiraSearchService.findSingleTicketByKey(jiraTicketKey);
         return singleTicketSearchResponse.getIssues();
     }
@@ -52,21 +52,21 @@ public class JiraToRequirementsTransformerService {
     /**
      * Finds related tickets based on search text
      */
-    private List<JiraSearchResponseIssue> findRelatedTickets(String projectName, List<String> keywords) {
+    private List<JiraSearchResponseTicket> findRelatedTickets(String projectName, List<String> keywords) {
         var jiraSearchResponse = jiraSearchService.findMultipleTicketsByKeywords(projectName, keywords);
-        for (JiraSearchResponseIssue searchResponseIssue : jiraSearchResponse.getIssues()) {
+        for (JiraSearchResponseTicket searchResponseIssue : jiraSearchResponse.getIssues()) {
             log.info("\nFound related ticket Key: {}, ticket Summary: {}", searchResponseIssue.key, searchResponseIssue.fields.summary);
         }
         return jiraSearchResponse.getIssues();
     }
 
-    private String transformJiraTicketsToRequirements(List<JiraSearchResponseIssue> jiraIssues) {
-        var generatedRequirementsResponse = llmApiService.callChatCompletionApi(jiraIssues);
+    private String transformJiraTicketsToRequirements(List<JiraSearchResponseTicket> jiraIssues) {
+        var generatedRequirementsResponse = llmApiService.callChatCompletionApiForSearchResultTickets(jiraIssues);
         log.info("\n<----- Generated requirements: ------\n\n" + generatedRequirementsResponse);
         return generatedRequirementsResponse;
     }
 
-    private static boolean isSearchResultEmpty(List<JiraSearchResponseIssue> singleTicketSearchResults) {
+    private static boolean isSearchResultEmpty(List<JiraSearchResponseTicket> singleTicketSearchResults) {
         if (singleTicketSearchResults.isEmpty()) {
             log.error("No ticket found for the provided search text = {}", "experimentation with MCP");
             return true;

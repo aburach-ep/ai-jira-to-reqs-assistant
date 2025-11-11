@@ -19,6 +19,6 @@ public class JiraSearchResponse {
     @JsonProperty("maxResults")
     private int maxResults;
 
-    private List<JiraSearchResponseIssue> issues;
+    private List<JiraSearchResponseTicket> issues;
 
 }

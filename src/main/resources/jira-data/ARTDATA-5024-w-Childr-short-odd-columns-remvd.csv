@@ -1,0 +1,481 @@
+﻿Summary,Issue key,Issue id,Issue Type,Status,Project key,Project name,Project type,Project lead,Project description,Project url,Priority,Resolution,Assignee,Reporter,Creator,Created,Updated,Last Viewed,Resolved,Version / Delivery,Version / Delivery,Component/s,Component/s,Due Date,Votes,Labels,Labels,Labels,Description,Environment,Inward issue link (Parent-Child),Inward issue link (Parent-Child),Inward issue link (Relation),Custom field (Defect Type),Definition of Done,Definition of Done,Custom field (Integrated),Custom field (Interaction Design Responsible),Custom field (Investment Cluster & Strategic Theme),Custom field (Issue Flags),Custom field (Job Size),Custom field (Justification),Custom field (Manual Activity),Custom field (Manual Test Steps),Custom field (Message Type),Custom field (Mgmt Status),Custom field (Min. Scope),Custom field (Planned Delivery Date (PDD)),Sprint,Sprint,Sprint,Custom field (Stack),Custom field (Stakeholder),Custom field (Start Date),Custom field (Status (Detailed)),Custom field (Status Comments),Custom field (Steps to Duplicate),Custom field (Story Points),Custom field (Team(s)),Custom field (Test Count),Custom field (Test Execution Status),Custom field (Test Plan),Custom field (Test Status decentral),Custom field (Tester Assigned To),Custom field (Testing Activity),Custom field (Threat Event Frequency),Custom field (Tier),Custom field (Time Criticality),Custom field (Title),Custom field (Total Costs in Euros),Custom field (VA Handover Parameters),Custom field (Validate Reason),Custom field (Validation Type)
+[SAM]: PROD enable avatar,UIDX-6351,26440432,Activity,Done,UIDX,UIDX,software,D051415,,,Medium,,C5380841,C5403847,C5403847,9/2/2025 8:10,11/6/2025 8:57,11/10/2025 12:35,,release 42.2,,SAM,,9/5/2024 0:00,0,,,,,,ARTDATA-5024,,,Internal,,Empty,,,Foundation -> Data Technology & Foundation,,,,,[],,Green,Yes,12/7/2025 0:00,CIM Iteration 25.4.4,,,,,,Maintain Status information,,,1,Magenta,,"{""issueId"":26440432,""testStatuses"":[]}",,,,Interoperability Test,,,,,,maintain in CAL Solution Editor,,
+[Account Manager] Update to GDPR statement,UIDX-6318,26384071,Story,clarification,UIDX,UIDX,software,D051415,,,Medium,,,C5403847,C5403847,8/28/2025 8:59,11/10/2025 8:33,11/10/2025 12:36,,,,,,,0,Magenta,PI-Q4-2025,UID,TrustArc - update to GDPR statement,,ARTDATA-5024,,,Internal,,Empty,,,Continuous Optimization -> Funnel 07 IT,,,,,[],,Green,Yes,12/7/2025 0:00,CIM IP Iteration 25.4.6,,,,,,Maintain Status information,,,1,Magenta,,"{""issueId"":26384071,""testStatuses"":[]}",,,,Interoperability Test,,,,,,maintain in CAL Solution Editor,,
+[SAM][FE/QA] Upload and Delete avatar,UIDX-6317,26383565,Story,Done,UIDX,UIDX,software,D051415,,,High,,C5393091,C5403847,C5403847,8/28/2025 8:58,11/10/2025 11:05,11/10/2025 12:36,,release 42.1,release 44.0,SAM,,,0,frontend,qa,,"*Background*
+Front-end work and accessibility testing effort for uploading and deleting avatar.
+
+Figma: [https://www.figma.com/design/yyAxcNFkmELHbOy0QPKoou/Account-manager-in-SAP4me-Tickets?node-id=1479-14699&t=NTSp75Gtjr37fxEM-1] [https://www.figma.com/design/yyAxcNFkmELHbOy0QPKoou/Account-manager-in-SAP4me-Tickets?node-id=1232-16949&t=66AddmyqSZnY9xn7-1]
+Implementation Technical Details > [https://wiki.one.int.sap/wiki/x/40sEQgE]
+
+*Technical Details [Avatar Client API]:*
+Profile team has implemented UID Avatar Upload, Delete and resizing > [https://profile.sap.com/. |https://profile.sap.com/] Here are some details on their implementation
+ #  Overall avatar editing ui code is incorporated to the repository [https://github.tools.sap/sap-community/com.sap.profile.ui]
+ # Precise location of the implementation is [https://github.tools.sap/sap-community/com.sap.profile.ui/tree/main/src/modules/profile/components/avatar-editor]
+ # *react-easy-crop* [https://github.tools.sap/sap-community/com.sap.profile.ui/blob/main/package.json#L45]  [https://www.npmjs.com/package/react-easy-crop]  and  *react-dropzone* [https://github.tools.sap/sap-community/com.sap.profile.ui/blob/main/package.json#L44]. [https://www.npmjs.com/package/react-dropzone] are used + r{*}eact-image-file-resizer{*} [https://www.npmjs.com/package/react-image-file-resizer]
+ # [AvatarEditor.tsx|https://github.tools.sap/sap-community/com.sap.profile.ui/blob/main/src/modules/profile/components/avatar-editor/AvatarEditor.tsx] is implemented by our team to assemble dialog from libs functionality.
+
+*Acceptance Criteria*
+A/C #1 - Avatar upload
+GIVEN User uploads a image
+WHEN Image format is jpeg. 
+THEN avatar image is updated and success message is shown
+
+A/C #2 - Avatar upload (validation)
+GIVEN User uploads a image
+WHEN Image format is not jpeg. 
+THEN Show error message, avatar upload not successful image to the user
+ 
+A/C #3 - Avatar delete
+GIVEN User deletes avatar image
+THEN Show message that avatar was successfully deleted
+
+ 
+
++*Technical:*+
+
+*_Upload:_*
+
+ 
+{code:java}
+POST /v1/avatar?idsName={idsName}
+
+Headers:
+Authentication: Bearer {accessToken}
+Content-Type: multipart/form-data
+
+Body:
+multipart/form-data -> file
+key: avatar
+value: {file.jpeg}
+Content-Type: image/jpeg  {code}
+ 
+
+_Note: Allow upload only jpeg files._
+
+*_Delete_*
+{code:java}
+DELETE /v1/avatar?idsName={idsName}
+
+Headers:
+Authentication: Bearer {accessToken}
+{code}
+ 
+
++*List of possible validation errors*+
+{code:java}
+MISSING_MULTIPART_DATA
+TOO_MANY_FILES
+IMAGE_NAME_MUST_BE_AVATAR
+IMAGE_FORMAT_ONLY_JPEG
+IMAGE_INVALID_DATA
+MISSING_IDS_NAME
+USER_IS_INACTIVE
+INVALID_USER {code}
+ 
+
++*_Format of error messages:_*+
+{code:java}
+{
+  ""details"": ""MISSING_IDS_NAME"",
+  ""traceId"": ""68ef62a078ee7381e0d5b52c9723c4fd""
+} {code}
+ ",,ARTDATA-5024,,IUMQA-3131,Internal,,Empty,,,Continuous Optimization -> Funnel 07 IT,,,,,[],,Green,Yes,12/7/2025 0:00,CIM Iteration 25.4.4,,,,,,Maintain Status information,,,5,Magenta,,"{""issueId"":26383565,""testStatuses"":[]}",,,,Interoperability Test,,,,,,maintain in CAL Solution Editor,,
+[SAM/Avatar][FE] Refactoring,UIDX-6316,26383548,Activity,Done,UIDX,UIDX,software,D051415,,,Medium,,C5393091,C5403847,C5403847,8/28/2025 8:56,11/10/2025 11:09,11/10/2025 12:36,,release 44.0,,Identity Renovation,SAM,,0,frontend,,,"Focus on:
+ * Code clean up
+ * Better state management",,ARTDATA-5024,,,Internal,,Empty,,,Continuous Optimization -> Funnel 07 IT,,,,,[],,Green,Yes,12/7/2025 0:00,CIM Iteration 25.4.5,,,,,,Maintain Status information,,,5,Magenta,,"{""issueId"":26383548,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+[SAM][BE]Upload and Delete avatar,UIDX-6315,26383541,Story,Done,UIDX,UIDX,software,D051415,,,High,,I762755,C5403847,C5403847,8/28/2025 8:55,11/3/2025 10:25,11/10/2025 12:36,,release 42.1,,SAM,,,0,backend,,,"Profile team has implemented feature to upload IDS Avatar Image. SAM backend should integrate with profile API to upload and delete avatar image, also SAM backend should expose endpoints secured by access_token to upload and delete avatar image. 
+
+Avatar implementation is documented here > [https://wiki.one.int.sap/wiki/x/40sEQgE]
+ * Url generation logic with salt is implemented as part of UIDX-6313, refactore the code so *avatar-owner i.e* the unique IDS image value generation is one place. 
+ * Validate the file format is jpg. On error, return http status 400 (Bad request)
+
+ * If the profile api is down. Return status 500, try again later. **
+
+ 
+
+*Acceptance Criteria:*
+A/C #1 - Avatar upload
+GIVEN user uploads a  image
+WHEN Image format is jpeg. 
+THEN call profile endpoint to save the image. Return http status 200 & image url you receive from profile api. 
+
+ 
+
+A/C #2 - Avatar upload
+GIVEN user uploads a image
+WHEN Image format is not jpeg. 
+THEN  Return http status 400, with appropriate error status. 
+
+ 
+
+A/C #3 - Avatar delete
+GIVEN user deletes image
+THEN call profile endpoint to delete the image. Return http status 204. 
+
+ 
+
+A/C #4 - Avatar api is down
+GIVEN user upload or delete image
+WHEN profile api is down. 
+THEN return 500. 
+
+Note: not possible to simulate for testing we are not owners of avatar api.
+
+ 
+
+A/C #5 - Avatar api returns error
+GIVEN user upload or delete image
+WHEN profile api return error
+THEN forward response to user
+
+ 
+
+A/C #6 - Avatar api returns error
+GIVEN user upload image with size bigger than 5 MB
+THEN returns error HTTP 413
+
+ 
+
++*List of possible validation errors*+
+{code:java}
+MISSING_MULTIPART_DATA
+TOO_MANY_FILES
+IMAGE_NAME_MUST_BE_AVATAR
+IMAGE_FORMAT_ONLY_JPEG
+IMAGE_INVALID_DATA
+MISSING_IDS_NAME
+USER_IS_INACTIVE
+INVALID_USER {code}
++*_Format of error messages:_*+
+{code:java}
+{
+  ""details"": ""MISSING_IDS_NAME"",
+  ""traceId"": ""68ef62a078ee7381e0d5b52c9723c4fd""
+} {code}
+ 
+
+For testing needed to be used QA env as Profile API does not have dev env.
+
++*echnical:*+
+
+*_Upload:_*
+
+ 
+{code:java}
+POST /v1/avatar?idsName={idsName}
+
+Headers:
+Authentication: Bearer {accessToken}
+Content-Type: multipart/form-data
+
+Body:
+multipart/form-data -> file
+key: avatar
+value: {file.jpeg}
+Content-Type: image/jpeg  {code}
+ 
+
+_Note: Allow upload only jpeg files._
+
+*_Delete_*
+{code:java}
+DELETE /v1/avatar?idsName={idsName}
+
+Headers:
+Authentication: Bearer {accessToken}{code}",,ARTDATA-5024,,,Internal,,Empty,,,Continuous Optimization -> Funnel 07 IT,,,,,[],,Green,Yes,12/7/2025 0:00,CIM Iteration 25.4.2,CIM Iteration 25.4.3,,,,,Maintain Status information,,,5,Magenta,,"{""issueId"":26383541,""testStatuses"":[]}",,,,Interoperability Test,,,,,,maintain in CAL Solution Editor,,
+[SAM][FE] Load avatar,UIDX-6314,26383534,Story,Done,UIDX,UIDX,software,D051415,,,High,,C5393091,C5403847,C5403847,8/28/2025 8:53,11/6/2025 8:57,11/10/2025 12:36,,release 42.1,,SAM,,,0,frontend,,,"*Background*
+Front-end work for loading avatar.
+
+ Figma: [https://www.figma.com/design/yyAxcNFkmELHbOy0QPKoou/Account-manager-in-SAP4me-Tickets?node-id=1479-14699&t=NTSp75Gtjr37fxEM-1] [https://www.figma.com/design/yyAxcNFkmELHbOy0QPKoou/Account-manager-in-SAP4me-Tickets?node-id=1232-16949&t=66AddmyqSZnY9xn7-1]
+Implementation Technical Details > https://wiki.one.int.sap/wiki/x/40sEQgE
+
+*Avatar Client API:*
+Profile team has implemented UID Avatar Upload, It seem to have a component for display with edit icon. Please check have a check 
+
+ #  Profile [https://profile.sap.com/. |https://profile.sap.com/] 
+ # Overall avatar editing ui code is incorporated to the repository [https://github.tools.sap/sap-community/com.sap.profile.ui]
+ # Precise location of the implementation is [https://github.tools.sap/sap-community/com.sap.profile.ui/tree/main/src/modules/profile/components/avatar-editor]
+ # *react-easy-crop* [https://github.tools.sap/sap-community/com.sap.profile.ui/blob/main/package.json#L45]  [https://www.npmjs.com/package/react-easy-crop]  and  *react-dropzone* [https://github.tools.sap/sap-community/com.sap.profile.ui/blob/main/package.json#L44]. [https://www.npmjs.com/package/react-dropzone] are used + r{*}eact-image-file-resizer{*} [https://www.npmjs.com/package/react-image-file-resizer]
+ # [AvatarEditor.tsx|https://github.tools.sap/sap-community/com.sap.profile.ui/blob/main/src/modules/profile/components/avatar-editor/AvatarEditor.tsx] is implemented by our team to assemble dialog from libs functionality.
+
+*Acceptance Criteria*
+A/C #1 - Loading avatar successfully
+GIVEN User uploads image
+THEN It is loaded successfully and displayed to the user
+
+A/C #2 - Loading avatar fails
+GIVEN User uploads image
+WHEN It is not loaded successfully
+THEN An error/unsuccess message is displayed to the user",,ARTDATA-5024,,,Internal,,Empty,,,Continuous Optimization -> Funnel 07 IT,,,,,[],,Green,Yes,12/7/2025 0:00,CIM Iteration 25.4.4,CIM Iteration 25.4.3,,,,,Maintain Status information,,,3,Magenta,,"{""issueId"":26383534,""testStatuses"":[]}",,,,Interoperability Test,,,,,,maintain in CAL Solution Editor,,
+[SAM][BE] Enriching V1 account endpoint,UIDX-6313,26383518,Story,Done,UIDX,UIDX,software,D051415,,,High,,I767436,C5403847,C5403847,8/28/2025 8:52,9/24/2025 14:09,11/10/2025 12:36,,release 40.0,,SAM,,,0,backend,,,"Avatar implementation is documented here > [https://wiki.one.int.sap/wiki/x/40sEQgE]
+
+*Dependency:*
+For salt value reachout to [~I753307] 
+
+*Acceptance Criteria:*
+avatar small and large url as part of v1/account for every IDS User
+{code:java}
+{
+    ""email"": ""rama.ramiah@sap.com"",
+    ""username"": ""S0012221155"",
+    ""firstName"": ""Rama"",
+    ""lastName"": ""Ramiah"",
+    ""avatarUrlSmall"": "" https://avatars.profile-qa.sap.com/ids/0/d/id0d3_small.jpeg"",
+    ""avatarUrlLarge"": "" https://avatars.profile-qa.sap.com/ids/0/d/id0d3_large.jpeg"",
+    ...
+    ""ownershipStatus"": ""BELONGS_TO_ONE_OF_VERIFIED_EMAILS"",
+    ""status"": ""ACTIVE""
+}{code}
+ 
+
+ 
+
+ ",,ARTDATA-5024,,,Internal,,Empty,,,Continuous Optimization -> Funnel 07 IT,,,,,[],,Green,Yes,12/7/2025 0:00,CIM Iteration 25.4.1,,,,,,Maintain Status information,,,5,Magenta,,"{""issueId"":26383518,""testStatuses"":[]}",,,,Interoperability Test,,,,,,maintain in CAL Solution Editor,,
+[FE] SAM | IDS Account Avatar (no BE),UIDX-5146,24660007,Story,Done,UIDX,UIDX,software,D051415,,,Medium,,C5393091,C5392084,C5392084,4/22/2025 7:27,6/27/2025 9:08,11/10/2025 12:36,,release 33.0,,SAM,,,0,frontend,,,"*As a* SAM user, *I want to have* separate avatars for different IDS identities *so that I* can manage better my linked accounts and switch easily between accounts
+
+ 
+
+*Background*
+
+To reflect what identity is currently authenticated we show the assigned avatar picture in the masthead. Post UID removal as IDP, user will need to be able to assign avatars on different IDS identity linked to UID. This story is about introducing such ability in SAM. 
+
+Note the existing UID Avatar is not affected, it's still fetched from the profile.sap.com and the related APIs - see [wiki|https://wiki.one.int.sap/wiki/display/ONEPROFILE/Avatar+API]
+
+*Technical Details*
+ * This story is about preparing the FE & UX part required for UIDX-4705
+
+ 
+
+*Note -* we aim to replicate the functional behaviour that is present on profile.sap.com, please check out how it works there currently
+
+ 
+
+*Acceptance Criteria*
+ * IDS account avatars can be hidden via feature toggle 
+ * -Upon selecting an identity in the Identity table, user can view the existing avatar in the details section on the right-
+ ** -If no avatar has been uploaded for that identity, user see default picture. Note: profile service provides picture in all cases even default one.-
+ * Upon clicking Edit Avatar icon, users can browse for new avatar picture and then upload it
+ ** Supported file formats - JPG , (?) PNG
+ ** File max size limitation
+ * Delete option is supported
+ * Option to resize and crop the picture on screen is supported (see profile.sap.com)
+ * Show success message or error upon new avatar upload
+
+ 
+
+*Additional Info*
+
+link to Figma: [https://www.figma.com/design/yyAxcNFkmELHbOy0QPKoou/Account-manager-in-SAP4me-Tickets?node-id=1232-16949&t=3nIvmut0rJ5mc2wl-0] 
+
+ 
+
+Profile Github repo - [https://github.wdf.sap.corp/sap-community/com.sap.profile.ui/tree/main]
+
+ 
+
+See files:
+ * /com.sap.profile.ui-main/src/modules/profile/components/hero-unit/HeroUnit.tsx
+ * /com.sap.profile.ui-main/src/modules/profile/components/avatar-editor/AvatarEditor.tsx
+
+ 
+
+Link to Profile - [https://profile.sap.com/] 
+
+ ",,ARTDATA-5024,,,Internal,,Empty,,,,,,,,[],,Green,Yes,,CIM Iteration 25.2.6,CIM Iteration 25.3.1,CIM Iteration 25.2.5,,,,Maintain Status information,,,8,Magenta,,"{""issueId"":24660007,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+[Design] Create a responsive design for View and upload Avatar flow,UIDX-5121,24614806,Activity,Done,UIDX,UIDX,software,D051415,,,Medium,,C5390200,C5390200,C5390200,4/16/2025 10:04,5/6/2025 14:34,11/10/2025 12:36,,,,SAM,,,0,design,,,Create a responsive design for View and upload Avatar flow,,ARTDATA-5024,,,Internal,,Empty,,,,,,,,[],,Green,Yes,,CIM Iteration 25.2.4,,,,,,Maintain Status information,,,,Magenta,,"{""issueId"":24614806,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+[SAM][BE] UID Avatar upload and delete,UIDX-4960,24273237,Activity,Development,UIDX,UIDX,software,D051415,,,Medium,,I762755,C5392084,C5392084,3/21/2025 9:34,10/29/2025 13:27,11/10/2025 12:36,,,,SAM,,,0,backend,,,"*Background*
+
+When you try to update the UID avatar image in SAM, you get redirected to profile.sap.com.  As part of UIDX-6315, now IDS image can be uploaded from SAM. We want to extend this functionality to UID. 
+
+Unify approach between IDS and UID for read, write (add it).
+
+*Technical Details*
+ * Unlike for IDS, there is no UID Salt value for uid. So you generate the hash, just using uid. 
+ * UID avatar upload url /api/v1/avatars
+
+*Acceptance Criteria:*
+
+A/C #1 - UID avatar can be updated in SAM
+GIVEN user is interested to update UID avatar image
+WHEN an attempt to do so in SAM is made
+THEN avatar can be updated directly, without redirect
+
+ ",,ARTDATA-5024,,,Internal,,Empty,,,,,,,,[],,Green,Yes,,CIM IP Iteration 25.4.6,,,,,,Maintain Status information,,,5,Magenta,,"{""issueId"":24273237,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+[FE] SAM | UID avatar - link to Profile app ,UIDX-4958,24270672,Story,Done,UIDX,UIDX,software,D051415,,,Medium,,C5381649,C5392084,C5392084,3/21/2025 7:31,5/6/2025 14:34,11/10/2025 12:36,,release 31.0,,SAM,,,0,frontend,,,"*As a* SAM user, *I want to have* a link to Profile app to *so that I* can easily change my UID avatar
+
+ 
+
+*Background*
+
+ 
+
+*Technical Details*
+ * Pattern for generating the link to Profile app that directly opens the modal (Edit Profile Picture screen). 
+
+Link for direct edit:
+{code:java}
+https://profile.sap.com/?edit_avatar=true{code}
+
+*Acceptance Criteria*
+ * A new edit option is available for UID avatar
+ * Clicking the option opens profile.sam.com in different tab with the _Edit Profile Picture_ modal opened
+
+*Additional Info*
+
+[Figma|https://www.figma.com/design/yyAxcNFkmELHbOy0QPKoou/Account-manager-in-SAP4me-Tickets?node-id=1232-16949&t=3nIvmut0rJ5mc2wl-0]
+
+Profile env
+ * [https://profile-qa.sap.com/]
+ * [https://profile.sap.com/] 
+
+Since there are only 2 env it should be verified on the QA env only.
+
+On the DEV env can be checked only that there was used valid link to based on requirement.
+
+ ",,ARTDATA-5024,,,Internal,,Empty,,,,,,,,[],,Green,Yes,,CIM Iteration 25.2.4,,,,,,Maintain Status information,,,3,Magenta,,"{""issueId"":24270672,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+[Devops] IDS Account Avatar | Create storage and provide credentials,UIDX-4742,23944307,Activity,Requirement Rejected,UIDX,UIDX,software,D051415,,,Medium,,C5383703,C5392084,C5392084,2/26/2025 11:25,4/25/2025 7:18,11/10/2025 12:36,,,,SAM,,,0,DevOps,,,"*Background*
+
+To reflect what identity is currently authenticated we show the assigned avatar picture in the masthead. Post UID removal as IDP, user will need to be able to assign avatars on different IDS identity linked to UID. So we will introduce such ability in SAM. Note the existing UID Avatar is not affected, it's still fetched from the profile.sap.com and the related APIs - see [wiki|https://wiki.one.int.sap/wiki/display/ONEPROFILE/Avatar+API]
+
+ 
+
+*Technical Details:*
+ * create storage in Azure and provide credentials
+
+ 
+
+ ",,ARTDATA-5024,,,Internal,,Empty,,,,,,,,[],,Green,Yes,,,,,,,,Maintain Status information,,,,Magenta,,"{""issueId"":23944307,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+[Spike] IDS account avatar integration,UIDX-4740,23943416,Activity,Done,UIDX,UIDX,software,D051415,,,Medium,,I753307,C5392084,C5392084,2/26/2025 10:36,4/17/2025 14:44,11/10/2025 12:36,,,,SAM,,,0,backend,,,"*Background*
+
+To reflect what identity is currently authenticated we show the assigned avatar picture in the masthead. Post UID removal as IDP, user will need to be able to assign avatars on different IDS identity linked to UID. So we will introduce such ability in SAM. 
+
+Current intention is that SAP Profile APIs will be extended so that it can support IDS account avatars (to be done by the community team). SAM will consume those APIs so that users can maintain their IDS account avatars
+
+*Technical Details*
+ * Support community team with any UID/IDS related questions and design discussions
+ * Investigate and document:
+ ** Authentication approach for both scenarios 1) SAM to Avatar to Profile APIs and 2) Account Switcher to Profile APIs
+ ** Generating a link on SAM side that navigate the user directly to Edit Profile Picture in profile.sap.com (UIDX-4958)
+ ** Endpoints that need to be called from SAM to upload/edit/delete IDS account avatars (UIDX-4705)
+
+ 
+
+ 
+
+{color:#c1c7d0}*Technical Details*{color}
+ * {color:#c1c7d0}define security approach for Read operations (how applications will connect and fetch the avatar from the new API we will create){color}
+ ** {color:#c1c7d0}Custom algorithm called from applications on the FE (similar to what SAP Community team introduce for their Avatar API: id + custom logic + hashing){color}
+ ** {color:#c1c7d0}Backend to Backend using CTS - note this will require more work for app to integrate with{color}
+ ** {color:#c1c7d0}another option (?){color}
+ * {color:#c1c7d0}define storage approach - Azure Blob storage vs Mongo DB vs other options{color}
+ * {color:#c1c7d0}define approach on how do we force/validate the aspect ratio 1:1 and how do we resize - what library to use, etc.{color}
+
+ 
+
+{color:#c1c7d0}*Success Criteria*{color}
+ * {color:#c1c7d0}Storage approach defined and agreed{color}
+ * {color:#c1c7d0}Security approach defined and agreed{color}
+
+ 
+
+ 
+
+ ",,ARTDATA-5024,,,Internal,,Empty,,,,,,,,[],,Green,Yes,,CIM Iteration 25.2.3,,,,,,Maintain Status information,,,8,Magenta,,"{""issueId"":23943416,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+[BE] IDS Account Avatar | Write endpoint for avatars,UIDX-4739,23943410,Activity,Requirement Rejected,UIDX,UIDX,software,D051415,,,Medium,,,C5392084,C5392084,2/26/2025 10:35,4/25/2025 7:17,11/10/2025 12:36,,,,SAM,,,0,backend,,,"*Background*
+
+To reflect what identity is currently authenticated we show the assigned avatar picture in the masthead. Post UID removal as IDP, user will need to be able to assign avatars on different IDS identity linked to UID. So we will introduce such ability in SAM. Note the existing UID Avatar is not affected, it's still fetched from the profile.sap.com and the related APIs - see [wiki|https://wiki.one.int.sap/wiki/display/ONEPROFILE/Avatar+API]
+
+This task is about creating new write endpoints that will allow users to upload such avatar in SAM
+
+*Technical Details*
+ * New endpoint to upload avatar in storage (Azure or DB) 
+ ** Max size - introduce configurable limit
+ ** File format - JPG and (?) PNG 
+ ** Expected check aspect ratio is 1:1 (how do we validate that on the BE (?))
+ ** Resize (pixels) - possible via configuration - we need some library to be able to resize (?)
+
+ 
+ * Parameters
+ ** TBC 
+
+ 
+
+*Success Criteria*
+ * Endpoint allows avatar upload 
+ * Errors/Validations in place for file format, size, etc. 
+
+ 
+
+ ",,ARTDATA-5024,,,Internal,,Empty,,,,,,,,[],,Green,Yes,,,,,,,,Maintain Status information,,,8,Magenta,,"{""issueId"":23943410,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+[BE] SAM - Read endpoints for avatars,UIDX-4707,23908497,Activity,Requirement Rejected,UIDX,UIDX,software,D051415,,,Medium,,,C5392084,C5392084,2/24/2025 14:42,4/25/2025 7:16,11/10/2025 12:36,,,,SAM,,,0,backend,,,"*Background*
+
+To reflect what identity is currently authenticated we show the assigned avatar picture in the masthead. Post UID removal as IDP, user will need to be able to assign avatars on different IDS identity linked to UID. So we will introduce such ability in SAM. Note the existing UID Avatar is not affected, it's still fetched from the profile.sap.com and the related APIs - see [wiki|https://wiki.one.int.sap/wiki/display/ONEPROFILE/Avatar+API]
+
+This task is about creating new read endpoints that will allow SAM, Account Switcher and other applications that want to make use of this functionality to display such avatar
+
+*Technical Details*
+ * Two new endpoints
+ ** read avatar based on Custom algorithm or CTS scope (depending on agreed approach) - used by external Apps + Account Switcher
+ ** read avatar based on IDS and verify that idsName belongs (linked under UID) to accessToken - used by SAM
+ ** We need to have default avatar
+ * Parameters
+ ** TBC 
+
+ 
+
+*Success Criteria*
+ * Read endpoints return the correct result 
+
+ 
+
+ 
+
+ ",,ARTDATA-5024,,,Internal,,Empty,,,,,,,,[],,Green,Yes,,,,,,,,Maintain Status information,,,8,Magenta,,"{""issueId"":23908497,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+[Design] SAM | View and upload  Avatar,UIDX-4706,23908494,Activity,Done,UIDX,UIDX,software,D051415,,,Medium,,C5390200,C5392084,C5392084,2/24/2025 14:41,4/16/2025 10:04,11/10/2025 12:36,,,,SAM,,,0,design,,,"*Background*
+
+To reflect what identity is currently authenticated we show the assigned avatar picture in the masthead. Post UID removal as IDP, user will need to be able to assign avatars on different IDS identity linked to UID. This story is about introducing such ability in SAM. 
+
+ 
+
+*Acceptance Criteria*
+ * UID avatar - for now there will be no option to upload UID avatar in SAM but will provide an _Edit_ icon/button which will open [https://profile-qa.sap.com|https://profile-qa.sap.com/u/val_dinchev] in different tab. 
+ * IDS account avatar
+ ** Upon selecting an identity in the Identity table, user can view the existing avatar in the details section on the right
+ *** If no avatar has been uploaded for that identity, user see default avatar 
+ ** Upon clicking Edit Avatar icon, a popup/modal window opens where users can browse for new avatar picture (or drag and drop) and then upload it
+ **  It's possible to delete an avatar from that window
+ ** Show success message or error upon new avatar upload - ""Your avatar has been updated. Please note that it may take up to 30 minutes before your avatar is updated on all SAP systems.""
+ ** Please check existing functionality on [https://profile-qa.sap.com|https://profile-qa.sap.com/u/val_dinchev]  Current understanding is that will re-use the existing backend from Profile application and we will only create a separate FE part on our side - but we should keep our UX as close as possible to theirs   
+
+ ",,ARTDATA-5024,,,Internal,,Empty,,,,,,,,[],,Green,Yes,,CIM Iteration 25.2.2,,,,,,Maintain Status information,,,,Magenta,,"{""issueId"":23908494,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+[SAM][FE] Enable UID Avatar to be updated within SAM,UIDX-4705,23907848,Story,Ready for Implementation,UIDX,UIDX,software,D051415,,,Medium,,I762755,C5392084,C5392084,2/24/2025 14:25,10/29/2025 13:27,11/10/2025 12:36,,,,SAM,,,0,frontend,,,"*Background:*
+Needs back-end work first under UIDX-6315.
+
+As a SAM user
+I want to be able to update UID avatar within SAM 
+So that I can manage my avatar better without being redirected to profile 
+
+*Technical Details:*
+Implementation is similar to what is done for IDS Avatar.
+
+API endpoints will be provided after UIDX-6315 implementation. 
+
+BE work in UIDX-4960
+
+*Acceptance Criteria:*
+GIVEN I am a logged-in SAM user
+WHEN I access my avatar and choose to update it
+THEN I should be able to within SAM, without being redirected to profile",,ARTDATA-5024,,,Internal,,Empty,,,,,,,,[],,Green,Yes,,CIM IP Iteration 25.4.6,,,,,,Maintain Status information,,,5,Magenta,,"{""issueId"":23907848,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,
+Account Manager | Avatar Picker For IDS User,ARTDATA-5024,23775820,Feature,In Development,ARTDATA,DATA Agile Release Train,software,D046689,,,High,,C5403847,D019626,D019626,2/13/2025 13:59,11/10/2025 3:21,11/10/2025 12:36,,,,Identity Renovation,,,0,Magenta,PI-Q4-2025,UID,"*Brief Context*
+To reflect what identity is currently authenticated we show the assigned avatar picture in the masthead. To be bae to do so we need a functionality in SAM to assign avatar photos to linked identities.
+
+*Acceptance Criteria*
+ - Provide possibility for all linked user to set an avatar picture. That picture will be used to show the current chosen account in the header area.
+ -- Align with Community team if we can re-use the avatar picker they already created for UID users.
+
+ *Additional Information*
+ - Community avatar picker: Authenticate to community.sap.com. Click in the avatar in the upper right corner which open a pop-up. On that pop-up click 'My Account'. Now your profile opens where you can choose/change your avatar picture.
+ - Contact person for account picker is Mirko Friedrich.
+ - Same functionality as we use already for UID avatars. That functionality is now enhanced to support as well IDS accounts
+ - Figma: [https://www.figma.com/design/yyAxcNFkmELHbOy0QPKoou/Account-manager-in-SAP4me-Tickets?node-id=1479-14699&t=NTSp75Gtjr37fxEM-1] [https://www.figma.com/design/yyAxcNFkmELHbOy0QPKoou/Account-manager-in-SAP4me-Tickets?node-id=1232-16949&t=66AddmyqSZnY9xn7-1]
+ - Implementation Technical Details > https://wiki.one.int.sap/wiki/x/40sEQgE",,DARTOBJECTIVES-1926,SP-29988,,Internal,"{""id"":1,""name"":""Feature is implemented"",""mandatory"":true,""rank"":0,""statusId"":""none"",""dueDate"":null,""isHeader"":false,""checked"":false,""priorityId"":null,""assigneeIds"":[],""globalItemId"":61022,""version"":""5.0"",""linkedIssueKey"":null}",0/3,,,Continuous Optimization -> Funnel 07 IT,,,,,[],,Green,Yes,12/7/2025 0:00,,,,,,,Maintain Status information,,,8,Identity Magenta,,"{""issueId"":23775820,""testStatuses"":[]}",,,,,,,,,,maintain in CAL Solution Editor,,

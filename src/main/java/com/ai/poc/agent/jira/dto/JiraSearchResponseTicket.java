@@ -5,15 +5,15 @@ import lombok.Data;
 
 
 @Data
-public class JiraSearchResponseIssue {
+public class JiraSearchResponseTicket {
     public String key;
 
     @JsonProperty("fields")
-    public JiraIssueFields fields;
+    public JiraTicketFields fields;
 
-    public static class JiraIssueFields {
+    public static class JiraTicketFields {
 
-        // jira task or jira issue name
+        // jira task or jira issue title
         public String summary;
 
         @JsonProperty("description")
