@@ -17,13 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JiraExcelFileToRequiremTransformerService {
 
-    private final JiraExcelParseService jiraExcelParseService;
     private final SapLlmApiService llmApiService;
 
-    private static final String RELATED_TICKETS_PREFIX = "{*}Related Tickets{*}: ";
-
     public String parseJiraTicketsFromExcelAndTransformToRequirements(String jiraTicketsCsvFileContent) {
-        List<JiraTicketDto> jiraTickets = jiraExcelParseService.parseJiraTicketsFromCsv(jiraTicketsCsvFileContent);
+        List<JiraTicketDto> jiraTickets = JiraExcelParseService.parseJiraTicketsFromCsv(jiraTicketsCsvFileContent);
         if (isSearchResultEmpty(jiraTicketsCsvFileContent)) {
             return StringUtils.EMPTY;
         }
