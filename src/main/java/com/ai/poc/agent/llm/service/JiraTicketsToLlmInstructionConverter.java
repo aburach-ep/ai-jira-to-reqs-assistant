@@ -26,7 +26,7 @@ public class JiraTicketsToLlmInstructionConverter {
         var jiraTicketDescriptions = new StringBuilder();
         for (int i = 1; i <= jiraTickets.size(); i++) {
             var jiraTicket = jiraTickets.get(i - 1);   // numbering should start from 1
-            jiraTicketDescriptions.append("Jira ticket # " + i).append("\n");
+            jiraTicketDescriptions.append("Jira ticket # " + jiraTicket.getKey()).append("\n");
             jiraTicketDescriptions.append("\t" + "Jira ticket Summary: " + jiraTicket.getFields().summary).append("\n");
             var formattedDescription = appendTabForEachNewLine(jiraTicket.getFields().description);
             jiraTicketDescriptions.append("\t" + "Jira ticket Description: \n\t\t" + formattedDescription).append("\n");

@@ -23,7 +23,7 @@ public class JiraTicketsToLlmInstructionConverterTest {
 
         // Basic assertions
         Assertions.assertThat(prompt.contains("Review the provided Jira ticket descriptions")).isTrue();
-        Assertions.assertThat(prompt).contains("Jira ticket # 1", "Jira ticket # 2", "Jira ticket # 3");
+        Assertions.assertThat(prompt).contains("Jira ticket # TICKNUM-1", "Jira ticket # TICKNUM-2", "Jira ticket # TICKNUM-3");
 
         // verify ticket summaries and descriptions are formatted with tab(s)
         Assertions.assertThat(prompt).contains("\tJira ticket Summary:", "\tJira ticket Description:");
