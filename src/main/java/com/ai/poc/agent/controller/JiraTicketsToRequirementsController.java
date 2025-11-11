@@ -33,7 +33,7 @@ public class JiraTicketsToRequirementsController {
 		try {
 			return new String(file.getBytes(), StandardCharsets.UTF_8);
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to read uploaded CSV file", e);
+			throw new RuntimeException("Failed to read attached to request CSV file", e);
 		}
 	}
 } 
