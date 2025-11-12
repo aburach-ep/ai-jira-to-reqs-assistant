@@ -7,7 +7,8 @@ import com.ai.poc.agent.llm.dto.SapLlmAuthTokenResponseDto;
 
 @FeignClient(
         name = "sapLlmAuthClient",
-        url = "${sap.llm.auth.url}")
+        url = "${sap.llm.auth.url}",
+        configuration = SapLlmAuthFeignConfig.class)
 public interface SapLlmAuthClient {
 
     @PostMapping(value = "/oauth/token", consumes = "application/x-www-form-urlencoded")
