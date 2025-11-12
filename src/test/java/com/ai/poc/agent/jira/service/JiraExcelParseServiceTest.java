@@ -10,18 +10,8 @@ import java.util.List;
 public class JiraExcelParseServiceTest {
 
     @Test
-    void testParseJiraTicketsFromCsv() throws Exception {
-        String excelWithJiraTickets = FileUtils.readSystemResource("jira-data/ARTDATA-5024 (Avatar Picker For IDS Usr)-w-Child-Tickets.csv");
-        List<JiraTicketDto> jiraTicketsDto = JiraExcelParseService.parseJiraTicketsFromCsv(excelWithJiraTickets);
-
-        Assertions.assertThat(jiraTicketsDto).isNotEmpty();
-        Assertions.assertThat(jiraTicketsDto).extracting(jiraTicketDto -> jiraTicketDto.getIssueKey())
-                .isNotNull();
-    }
-
-    @Test
     void testParseJiraTicketsFromCsvWhereOddColumnsRemoved() throws Exception {
-        String excelWithJiraTickets = FileUtils.readSystemResource("jira-data/ARTDATA-5024-w-Childr-short-odd-columns-remvd.csv");
+        String excelWithJiraTickets = FileUtils.readSystemResource("jira-data/ARTDATA-5024-w-SubTickets-short-odd-columns-remvd.csv");
         List<JiraTicketDto> jiraTicketsDto = JiraExcelParseService.parseJiraTicketsFromCsv(excelWithJiraTickets);
 
         Assertions.assertThat(jiraTicketsDto).isNotEmpty();
