@@ -449,7 +449,7 @@ To reflect what identity is currently authenticated we show the assigned avatar 
 
  *Additional Information*
  - Community avatar picker: Authenticate to community.sap.com. Click in the avatar in the upper right corner which open a pop-up. On that pop-up click 'My Account'. Now your profile opens where you can choose/change your avatar picture.
- - Contact person for account picker is Mirko Friedrich.
+ - Contact person for account picker is Alice Wonder.
  - Same functionality as we use already for UID avatars. That functionality is now enhanced to support as well IDS accounts
  - Figma: [https://www.figma.com/design/yyAxcNFkmELHbOy0QPKoou/Account-manager-in-SAP4me-Tickets?node-id=1479-14699&t=NTSp75Gtjr37fxEM-1] [https://www.figma.com/design/yyAxcNFkmELHbOy0QPKoou/Account-manager-in-SAP4me-Tickets?node-id=1232-16949&t=66AddmyqSZnY9xn7-1]
  - Implementation Technical Details > https://aDomain/wiki/x/40sEQgE",,DARTOBJECTIVES-1926,SP-29988,,Internal,"{""id"":1,""name"":""Feature is implemented"",""mandatory"":true,""rank"":0,""statusId"":""none"",""dueDate"":null,""isHeader"":false,""checked"":false,""priorityId"":null,""assigneeIds"":[],""globalItemId"":61022,""version"":""5.0"",""linkedIssueKey"":null}",0/3,,,Continuous Optimization -> Funnel 07 IT,,,,,[],,Green,Yes,12/7/2025 0:00,,,,,,,Maintain Status information,,,8,Identity Magenta,,"{""issueId"":23775820,""testStatuses"":[]}",,,,maintain in CAL Solution Editor
