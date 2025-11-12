@@ -14,10 +14,15 @@ This project provides AI-powered assistant (agent), capable to generate holistic
 ## Getting Started
 1. Update your Jira and AI (LLM) API keys in `application.yaml`.
 2. Run `./gradlew bootRun` to start the service.
-3. Sample request:
+3. Sample command to capture your local IP address:
+    `ipconfig /all | find "IPv4 Address"`
+4. Sample request:
    ```bash
    curl -X POST "http://localhost:8080/jira-tickets-to-requirements" -H "Accept: application/json"  -F "file=@/path/to/jira_tickets.csv"
    ```
+
+## Sample Postman request:
+![samplePostmanRequest.png](docs/samplePostmanRequest.png)
 
 ## Notes
 - Built with Java 21, Spring Boot, and Gradle
